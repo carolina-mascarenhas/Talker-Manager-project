@@ -1,7 +1,3 @@
-const validateEmail = require('./email');
-const validatePassword = require('./password');
+const loginValidations = require('./loginMiddleware');
 
-module.exports = {
-  validateEmail,
-  validatePassword,
-};
+module.exports = loginValidations;
