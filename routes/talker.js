@@ -27,12 +27,22 @@ routes.get('/:id', (req, res) => {
     });
 });
 
-routes.use(validations.checkToken,
-  validations.checkName,
-  validations.checkAge, 
-  validations.checkTalk,
-  validations.checkWatchedAtKeys, 
-  validations.checkRateKeys);
+routes.use(validations.checkToken);
+
+routes.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  const contentFile = await fs.readFile(file, 'utf-8');
+  const arr = JSON.parse(contentFile);
+  const filtered = arr.filter((obj) => obj.id !== parseInt(id, 10));
+  await fs.writeFile(file, JSON.stringify(filtered));
+  res.status(204).json(filtered);
+});
+
+routes.use(validations.checkName);
+routes.use(validations.checkAge);
+routes.use(validations.checkTalk);
+routes.use(validations.checkWatchedAtKeys);
+routes.use(validations.checkRateKeys);
 
 routes.post('/', async (req, res) => {
   const { name, age, talk: { watchedAt, rate } } = req.body;
@@ -51,12 +61,10 @@ routes.post('/', async (req, res) => {
 routes.put('/:id', async (req, res) => {
   const { name, age, talk: { watchedAt, rate } } = req.body;
   const { id } = req.params;
-  const contentFile = await fs.readFile('./talker.json', 'utf-8');
+  const contentFile = await fs.readFile(file, 'utf-8');
   const arr = JSON.parse(contentFile);
   const index = arr.findIndex((obj) => obj.id === parseInt(id, 10));
-  console.log(index);
   arr[index] = { ...arr[index], name, age, id: index + 1, talk: { watchedAt, rate } };
-  console.log(arr);
   await fs.writeFile('./talker.json', JSON.stringify(arr));
   res.status(200).json({ name, age, id: index + 1, talk: { watchedAt, rate } });
 });
