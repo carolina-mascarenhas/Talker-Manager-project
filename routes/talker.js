@@ -27,6 +27,7 @@ routes.get('/:id', (req, res) => {
 });
 
 routes.post('/',
+  validations.checkToken,
   validations.checkName,
   validations.checkAge, 
   validations.checkTalk,
@@ -38,11 +39,11 @@ routes.post('/',
     arr.push({
       name,
       age,
+      id: arr.length + 1,
       talk: { watchedAt, rate },
     });
-    console.log(arr);
     await fs.writeFile('./talker.json', JSON.stringify(arr));
-    res.status(201).json({ name, age, talk: { watchedAt, rate } });
-});
+    res.status(201).json({ name, age, id: arr.length, talk: { watchedAt, rate } });
+  });
 
 module.exports = routes;
