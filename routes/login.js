@@ -1,6 +1,6 @@
 const express = require('express');
 const crypto = require('crypto');
-const validations = require('../middlewares');
+const validations = require('../middlewares/loginMiddleware');
 
 const routes = express.Router();
 
