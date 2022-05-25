@@ -13,6 +13,14 @@ routes.get('/', (_req, res) => {
     });
 });
 
+routes.get('/search', validations.checkToken, async (req, res) => {
+  const { q } = req.query;
+  const contentFile = await fs.readFile(file, 'utf-8');
+  const arr = JSON.parse(contentFile);
+  const filtered = arr.filter((obj) => obj.name.includes(q));
+  res.status(200).json(filtered);
+});
+
 routes.get('/:id', (req, res) => {
   fs.readFile(file, 'utf-8')
     .then((fileContent) => {
@@ -65,7 +73,7 @@ routes.put('/:id', async (req, res) => {
   const arr = JSON.parse(contentFile);
   const index = arr.findIndex((obj) => obj.id === parseInt(id, 10));
   arr[index] = { ...arr[index], name, age, id: index + 1, talk: { watchedAt, rate } };
-  await fs.writeFile('./talker.json', JSON.stringify(arr));
+  await fs.writeFile(file, JSON.stringify(arr));
   res.status(200).json({ name, age, id: index + 1, talk: { watchedAt, rate } });
 });
 
